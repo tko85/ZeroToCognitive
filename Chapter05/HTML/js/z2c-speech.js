@@ -86,7 +86,7 @@ function initPage ()
     displayNLC.on("click",  function()
     {
       var nlcPage = "displayNLC.html";
-      checkNLC(nlcPage, stt_out);
+      checkNLC(nlcPage, stt_out);  //reading the speech-to-text box
     });
 }
 
