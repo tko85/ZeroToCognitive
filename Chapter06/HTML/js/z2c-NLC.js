@@ -14,36 +14,8 @@
  * limitations under the License.
  */
 // displayNLC results
-function checkNLC(_display, _source)
-{
-  var options = {};
-  options.cquery = _source[0].innerText;
-  $.when($.get(_display), $.post('/api/understand/classifyInd', options)).done(function(_page, _nlc_results){
-    console.log("page returned");
-    var _target= $("#modal");
-    _target.append(_page);
-    _target.height($(window).height());
-    _target.show();
-    _data = _nlc_results[0];
-    _classes = JSON.parse(JSON.parse(_data).results).classes;
-    displayNLC($("#industryResult"), _classes);
-    closeNLC=$("#close_NLC");
-    closeNLC.on("click", function(){
-      console.log("closeNLC clicked.")
-      $("#modal").empty();
-    });
-});
-}
-
-function getIndustryClassification(_source, _string)
-{
-
-}
-
-function setModal(_display, cbfn, _modalTarget, _results)
-{
-
-}
+var industryTable = "#industryResult";
+var nlc_classes; var industryPage="displayNLC.html";
 
 function displayNLC(_target, _results)
 {
@@ -61,4 +33,33 @@ function displayNLC(_target, _results)
     _idx++;
   }
   target.append("</table>");
+}
+
+function getIndustryClassification(_source, _string)
+{
+  var options = {};
+  options.cquery = _source[0].innerText;
+  $.when( $.post('/api/understand/classifyInd', options)).done(function(_nlc_results){
+    _data = _nlc_results;
+    nlc_classes = JSON.parse(JSON.parse(_data).results).classes;
+    industry = nlc_classes[0].class_name;
+    toggle_mic(_mic, _stop, false)
+    talkToMe(dialog_target, _string.format(getCookieValue("name"), industry));
+  });
+}
+
+function setModal(_display, cbfn, _modalTarget, _results)
+{
+  $.when($.get(_display)).done(function(_page){
+    var _target= $("#modal");
+    _target.append(_page);
+    _target.height($(window).height());
+    _target.show();
+    closeNLC=$("#close_NLC");
+    closeNLC.on("click", function(){
+      $("#modal").empty();
+      nextStep();
+    });
+    cbfn($(_modalTarget), _results);
+  });
 }
