@@ -1,5 +1,18 @@
 @CHARSET "UTF-8";
 
+.acc_header.on {
+	color: #000000; 	border: .125em solid #298A08; font-size: 1.25em; text-align: center; font-style: bold;
+}
+.acc_body.on {
+	color: #298A08; 	border: .125em solid #000000; visibility: visible;
+}
+.acc_header.off {
+	color: #000000; 	border: .125em solid #E0F8E0; font-size: 1em; text-align: center; font-style: bold;
+}
+.acc_body.off {
+	color: #A4A4A4; 	border: .125em solid #E0F8E0; visibility: hidden; height: 0;
+}
+
 .showfocus, .acc_header, .acc_body {
   padding: .5em;
 	border: .25em solid #A5A5A5;
