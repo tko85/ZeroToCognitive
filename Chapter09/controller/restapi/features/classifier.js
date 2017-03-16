@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var extend = require('extend');
+var extend = require('extend');  //used to extend a target object with other objects
 var cfenv = require('cfenv');
 var watson = require('watson-developer-cloud');
-var WATSON_NLC_SERVICE_NAME = "Watson-NLC-Service";
+var WATSON_NLC_SERVICE_NAME = "natural-language-classifier";
 var config = require("../../env.json");
 
 var appEnv = cfenv.getAppEnv();

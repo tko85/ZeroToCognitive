@@ -16,16 +16,16 @@
 /*
  * Zero to Cognitive Chapter 9
  */
-var express = require('express');
-var http = require('http');
+var express = require('express'); //web server framework
+var http = require('http');       //http handler functions
 var https = require('https');
-var path = require('path');
-var fs = require('fs');
-var mime = require('mime');
-var bodyParser = require('body-parser');
+var path = require('path');     //directory path type functions
+var fs = require('fs');         //file functions
+var mime = require('mime');     //determines mime type from path extension
+var bodyParser = require('body-parser');  //parses html request body (used with Post/Put methods when there is content in the message body)
 var cfenv = require('cfenv');
 
-var cookieParser = require('cookie-parser');
+var cookieParser = require('cookie-parser');  //parses cookies and populates a req.cookies object
 var session = require('express-session');
 var cloudant = require('cloudant');
 var myDB = require('./controller/restapi/features/cloudant_utils');
@@ -35,13 +35,13 @@ var sessionStore = Object.create(sessionBase.SessionObject);
 
 var vcapServices = require('vcap_services');
 var uuid = require('uuid');
-var env = require('./controller/env.json');
+var env = require('./controller/env.json'); //holds environmental variables for the controller js files
 var sessionSecret = env.sessionSecret;
 var gmailCredentials = env.gmail;
 var appEnv = cfenv.getAppEnv();
-var app = express();
-var busboy = require('connect-busboy');
-app.use(busboy());
+var app = express();    //the application that Express is acting as web server for
+var busboy = require('connect-busboy'); // parses multi-part request bodies e.g. multiple files
+app.use(busboy());  //app.use mounts middleware function.  Since no path argument provided, it is invoked for each request
 
 // the session secret is a text string of arbitrary length which is
 //  used to encode and decode cookies sent between the browser and the server
@@ -59,32 +59,32 @@ if (cfenv.getAppEnv().isLocal == true)
 
   var httpsOptions = { key: pkey, cert: pcert };
 } else {
-  app.enable('trust proxy');
+  app.enable('trust proxy');    //this property designates if a proxy is being used
   app.use (function (req, res, next) {
-          if (req.secure) {next();}
+          if (req.secure) {next();}   //req.secure is an Express property of the request object
           else {res.redirect('https://' + req.headers.host + req.url);}
   });
 }
 
-app.use(cookieParser(sessionSecret));
-app.use( session( {
+app.use(cookieParser(sessionSecret));   //mounts middlware to any call
+app.use( session( {                     //mounts middleware to any call path
     store: sessionStore,
     secret: sessionSecret, resave: false, saveUninitialized: true,
     cookie: {secure: true, maxAge:24*60*60*1000},
     genid: function (req) {return uuid.v4()}
   }));
-app.get('/login*', function (req, res) {console.log("login session is: "+req.session); loadSelectedFile(req, res);});
+app.get('/login*', function (req, res) {console.log("login session is: "+req.session); loadSelectedFile(req, res);});   //for any get method with path beginning with /login, executes this function
 
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));  //mounts middleware that only parses `urlencoded` bodies.
+app.use(bodyParser.json());  //mounts middleware that parses only parses json
 app.set('appName', 'z2c-chapter09');
 app.set('port', appEnv.port);
 
-app.set('views', path.join(__dirname + '/HTML'));
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/HTML'));
+app.set('views', path.join(__dirname + '/HTML')); /*The directory where template files are found.  __dirname is a object local to each module.  The directory name of the current module. This the same as the path.dirname() of the __filename.*/
+app.engine('html', require('ejs').renderFile);  //ejs template engine mapped to all calls to html files
+app.set('view engine', 'ejs');  //view engine for using embedded javascript templates
+app.use(express.static(__dirname + '/HTML'));  /*This is the only built-in middleware function in Express. It serves static files and is based on serve-static.*/
 app.use(bodyParser.json());
 
 // Define your own router file in controller folder, export the router, add it into the index.js.
@@ -99,14 +99,14 @@ if (cfenv.getAppEnv().isLocal == true)
   }
   else
   {
-    var server = app.listen(app.get('port'), function() {console.log('Listening on port %d', server.address().port);});
+    var server = app.listen(app.get('port'), function() {console.log('Listening on port %d', server.address().port);});  /*starts a socket and listens for connections on host and port.  Identical to Node's http.Server.listen()*/
   }
 /*
 */
 function loadSelectedFile(req, res) {
-    var uri = req.originalUrl;
+    var uri = req.originalUrl;  /*This property is much like req.url; however, it retains the original request URL, allowing you to rewrite req.url freely for internal routing purposes. For example, the “mounting” feature of app.use() will rewrite req.url to strip the mount point.*/
     var filename = __dirname + "/HTML" + uri;
-    fs.readFile(filename,
+    fs.readFile(filename,         /*Asynchronously reads the entire contents of a file.  The callback is passed two arguments (err, data), where data is the contents of the file.*/
         function(err, data) {
             if (err) {
                 console.log('Error loading ' + filename + ' error: ' + err);

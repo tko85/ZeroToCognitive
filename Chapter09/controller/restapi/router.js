@@ -20,7 +20,8 @@ var classifier = require('./features/classifier');
 var auth = require('./features/authenticate');
 var images = require('./features/images');
 
-module.exports = router;
+module.exports = router;  /*If you want the root of your module's export to be a function (such as a constructor) or if you want to export a complete object in one assignment instead of building it one property at a time, assign it to module.exports instead of exports.*/
+
 // speech-to-text
 router.get('/api/speech-to-text/token*',speech_to_text.stt_token);
 router.get('/api/text-to-speech/synthesize*',speech_to_text.tts_synthesize);
