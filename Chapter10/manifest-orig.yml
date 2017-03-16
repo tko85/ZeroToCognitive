@@ -12,5 +12,8 @@ applications:
     - Natural Language Classifier-xx
     - Cloudant NoSQL DB-xx
     - AlchemyAPI-xx
+    - Retrieve and Rank-xx
     - Conversation-xx
     - Visual Recognition-xx
+    - Streaming Analytics-xx
+    - Secure Gateway-xx

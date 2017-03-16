@@ -25,5 +25,17 @@ var conversation = new Watson({
 
 exports.response = function(req, res)
 {
+  var payload = { workspace_id: config.conversations.workspace, context: {}, input: {text: ""} };
+  if (req.body) {
+    if (req.body.input) { payload.input.text = req.body.input; }
+    if (req.body.context) { payload.context = req.body.context; }
+  } else {
+    return res.send({"error": "Nothing received to process"})}
 
+  conversation.message(payload, function(err, data)
+    {
+      if (err) {
+        return res.status(err.code || 500).json(err); }
+      return res.json(data);
+    });
 }
