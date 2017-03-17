@@ -40,3 +40,6 @@ jspm_packages
 # OSX files
 .DS_Store
 *.key
+
+# Environment with services credentials
+env.json
